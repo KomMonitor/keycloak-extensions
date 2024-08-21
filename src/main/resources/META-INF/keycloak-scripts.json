@@ -1,0 +1,9 @@
+{
+  "mappers": [
+    {
+      "name": "Kommonitor Role Mapper",
+      "fileName": "km-mapper.js",
+      "description": "Kommonitor Role Mapper. Only maps roles directly assigned or inherited from direct group membership."
+    }
+  ]
+}
