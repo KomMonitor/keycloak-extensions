@@ -6,13 +6,13 @@
 
     <groupId>org.n52.kommonitor</groupId>
     <artifactId>keycloak-extensions</artifactId>
-    <version>1.0-SNAPSHOT</version>
+    <version>1.0</version>
 
     <properties>
         <maven.compiler.source>17</maven.compiler.source>
         <maven.compiler.target>17</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <version.keycloak>999.0.0-SNAPSHOT</version.keycloak>
+        <version.keycloak>25.0.6</version.keycloak>
     </properties>
 
     <dependencies>
