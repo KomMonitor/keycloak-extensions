@@ -19,11 +19,19 @@ jobs:
 
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
+      - name: Cache Docker layers
+        uses: actions/cache@v2
+        with:
+          path: /tmp/.buildx-cache
+          key: ${{ runner.os }}-buildx-${{ github.sha }}
+          restore-keys: |
+            ${{ runner.os }}-buildx-
+
       - name: Check Out Repo 
         uses: actions/checkout@v2 
 
-      - name: Docker meta
-        id: meta
+      - name: Docker meta | targe = postgres
+        id: meta_postgres
         uses: docker/metadata-action@v3
         with:
           # list of Docker images to use as base name for tags
@@ -33,8 +41,22 @@ jobs:
           tags: |
             type=ref,event=branch
             type=ref,event=pr
-            type=semver,pattern={{version}}
-            type=semver,pattern={{major}}.{{minor}}
+            type=semver,pattern={{version}}-postgres
+            type=semver,pattern={{major}}.{{minor}}-postgres
+
+      - name: Docker meta | target = mssql
+        id: meta_mssql
+        uses: docker/metadata-action@v3
+        with:
+          # list of Docker images to use as base name for tags
+          images: |
+            kommonitor/keycloak
+          # generate Docker tags based on the following events/attributes
+          tags: |
+            type=ref,event=branch
+            type=ref,event=pr
+            type=semver,pattern={{version}}-mssql
+            type=semver,pattern={{major}}.{{minor}}-mssql
 
       - name: Login to Docker Hub
         uses: docker/login-action@v1
@@ -45,16 +67,35 @@ jobs:
       - name: Set up Docker Buildx
         id: buildx
         uses: docker/setup-buildx-action@v1
-
-      - name: Build and push
-        id: docker_build
+      
+      - name: Build and push | target = postgres
+        id: docker_build_postgres
         uses: docker/build-push-action@v2
         with:
           context: ./
           file: ./Dockerfile
+          builder: ${{ steps.buildx.outputs.name }}
           push: true
-          tags: ${{ steps.meta.outputs.tags }}
-          labels: ${{ steps.meta.outputs.labels }}
+          target: postgres
+          tags: ${{ steps.meta_postgres.outputs.tags }}
+          labels: ${{ steps.meta_postgres.outputs.labels }}
+          cache-from: type=local,src=/tmp/.buildx-cache
+          cache-to: type=local,dest=/tmp/.buildx-cache
+
+      - name: Build and push | target = mssql
+        id: docker_build_mssql
+        uses: docker/build-push-action@v2
+        with:
+          context: ./
+          file: ./Dockerfile
+          builder: ${{ steps.buildx.outputs.name }}
+          push: true
+          target: mssql
+          tags: ${{ steps.meta_mssql.outputs.tags }}
+          labels: ${{ steps.meta_mssql.outputs.labels }}
+          cache-from: type=local,src=/tmp/.buildx-cache
+          cache-to: type=local,dest=/tmp/.buildx-cache
+
 
       - name: Image digest
         run: echo ${{ steps.docker_build.outputs.digest }}

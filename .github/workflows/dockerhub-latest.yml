@@ -40,7 +40,7 @@ jobs:
         uses: docker/setup-buildx-action@v1
 
       - name: Build and push | target = postgres
-        id: docker_build
+        id: docker_build_postgres
         uses: docker/build-push-action@v2
         with:
           context: ./
@@ -53,7 +53,7 @@ jobs:
           cache-to: type=local,dest=/tmp/.buildx-cache
 
       - name: Build and push | target = mssql
-        id: docker_build
+        id: docker_build_mssql
         uses: docker/build-push-action@v2
         with:
           context: ./
