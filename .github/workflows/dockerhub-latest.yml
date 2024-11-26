@@ -39,7 +39,7 @@ jobs:
         id: buildx
         uses: docker/setup-buildx-action@v1
 
-      - name: Build and push
+      - name: Build and push | target = postgres
         id: docker_build
         uses: docker/build-push-action@v2
         with:
@@ -47,7 +47,21 @@ jobs:
           file: ./Dockerfile
           builder: ${{ steps.buildx.outputs.name }}
           push: true
-          tags:  kommonitor/keycloak:latest
+          target: postgres
+          tags:  kommonitor/keycloak:latest-postgres
+          cache-from: type=local,src=/tmp/.buildx-cache
+          cache-to: type=local,dest=/tmp/.buildx-cache
+
+      - name: Build and push | target = mssql
+        id: docker_build
+        uses: docker/build-push-action@v2
+        with:
+          context: ./
+          file: ./Dockerfile
+          builder: ${{ steps.buildx.outputs.name }}
+          push: true
+          target: mssql
+          tags:  kommonitor/keycloak:latest-mssql
           cache-from: type=local,src=/tmp/.buildx-cache
           cache-to: type=local,dest=/tmp/.buildx-cache
 

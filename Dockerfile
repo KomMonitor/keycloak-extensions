@@ -9,15 +9,27 @@ COPY pom.xml pom.xml
 RUN mvn clean package
 
 FROM quay.io/keycloak/keycloak:${KC_IMAGE_VERSION} AS kcbuilder
+COPY --from=mvnbuilder /target/keycloak-extensions-1.0.jar ./providers/keycloak-extensions-1.0.jar
 
-# Configure a database vendor
+# build for postgres
+WORKDIR /opt/keycloak-postgres
 ENV KC_DB=postgres
+RUN cp -r /opt/keycloak/* .
+RUN ls -lhat
+RUN ./bin/kc.sh build --features="admin-fine-grained-authz,scripts"
 
-WORKDIR /opt/keycloak
-COPY --from=mvnbuilder /target/keycloak-extensions-1.0.jar /opt/keycloak/providers/keycloak-extensions-1.0.jar
-RUN /opt/keycloak/bin/kc.sh build --features="admin-fine-grained-authz,scripts"
+# build for mssql
+WORKDIR /opt/keycloak-mssql
+ENV KC_DB=mssql
+RUN cp -r /opt/keycloak/* .
+RUN ./bin/kc.sh build --features="admin-fine-grained-authz,scripts"
 
-FROM quay.io/keycloak/keycloak:latest AS final
-COPY --from=kcbuilder /opt/keycloak/ /opt/keycloak/
+# target = postgres
+FROM quay.io/keycloak/keycloak:latest AS postgres
+COPY --from=kcbuilder /opt/keycloak-postgres/ /opt/keycloak/
+ENTRYPOINT ["/opt/keycloak/bin/kc.sh", "start", "--optimized"]
 
+# target = mssql
+FROM quay.io/keycloak/keycloak:latest AS mssql
+COPY --from=kcbuilder /opt/keycloak-mssql/ /opt/keycloak/
 ENTRYPOINT ["/opt/keycloak/bin/kc.sh", "start", "--optimized"]

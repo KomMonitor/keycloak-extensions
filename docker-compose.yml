@@ -10,7 +10,7 @@ services:
       POSTGRES_PASSWORD: keycloak
   
   keycloak:
-    image: kommonitor.de/keycloak:25
+    image: kommonitor/keycloak:latest-postgres
     restart: on-failure:5
     ports:
       - 8443:8443
