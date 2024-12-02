@@ -9,10 +9,10 @@ COPY pom.xml pom.xml
 RUN mvn clean package
 
 FROM quay.io/keycloak/keycloak:${KC_IMAGE_VERSION} AS kcbuilder
-COPY --from=mvnbuilder /target/keycloak-extensions-1.0.jar ./providers/keycloak-extensions-1.0.jar
 
 # build for postgres
 WORKDIR /opt/keycloak-postgres
+COPY --from=mvnbuilder /target/keycloak-extensions-1.0.jar ./providers/keycloak-extensions-1.0.jar
 ENV KC_DB=postgres
 RUN cp -r /opt/keycloak/* .
 RUN ls -lhat
@@ -20,6 +20,7 @@ RUN ./bin/kc.sh build --features="admin-fine-grained-authz,scripts"
 
 # build for mssql
 WORKDIR /opt/keycloak-mssql
+COPY --from=mvnbuilder /target/keycloak-extensions-1.0.jar ./providers/keycloak-extensions-1.0.jar
 ENV KC_DB=mssql
 RUN cp -r /opt/keycloak/* .
 RUN ./bin/kc.sh build --features="admin-fine-grained-authz,scripts"
