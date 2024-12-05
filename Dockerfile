@@ -16,13 +16,13 @@ WORKDIR /opt/keycloak-postgres
 ENV KC_DB=postgres
 RUN cp -r /opt/keycloak/* .
 RUN ls -lhat
-RUN ./bin/kc.sh build --features="admin-fine-grained-authz,scripts"
+RUN ./bin/kc.sh build --features="admin-fine-grained-authz,scripts,hostname:v1"
 
 # build for mssql
 WORKDIR /opt/keycloak-mssql
 ENV KC_DB=mssql
 RUN cp -r /opt/keycloak/* .
-RUN ./bin/kc.sh build --features="admin-fine-grained-authz,scripts"
+RUN ./bin/kc.sh build --features="admin-fine-grained-authz,scripts,hostname:v1"
 
 # target = postgres
 FROM quay.io/keycloak/keycloak:latest AS postgres
