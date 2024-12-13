@@ -1,6 +1,7 @@
 package org.n52.kommonitor.keycloak;
 
 
+import java.util.Optional;
 import java.util.Set;
 import java.util.function.BiFunction;
 import java.util.stream.Collectors;
@@ -10,28 +11,48 @@ import org.keycloak.authorization.AuthorizationProvider;
 import org.keycloak.authorization.identity.Identity;
 import org.keycloak.authorization.model.Policy;
 import org.keycloak.authorization.policy.evaluation.Evaluation;
-import org.keycloak.authorization.policy.provider.PolicyProvider;
 import org.keycloak.authorization.policy.provider.role.RolePolicyProvider;
 import org.keycloak.models.KeycloakSession;
 import org.keycloak.models.RealmModel;
 import org.keycloak.models.UserModel;
 import org.keycloak.models.UserProvider;
+import org.keycloak.quarkus.runtime.configuration.Configuration;
 import org.keycloak.representations.idm.authorization.RolePolicyRepresentation;
 
-public class KommonitorRolePolicyProvider implements PolicyProvider {
+
+public class KommonitorRolePolicyProvider extends RolePolicyProvider {
+
+    private static final String KOMMONITOR_REALM_KEY = "kommonitor.realm.name";
+
+
+    private static final Logger LOG = Logger.getLogger(RolePolicyProvider.class);
 
     private final BiFunction<Policy, AuthorizationProvider, RolePolicyRepresentation> representationFunction;
 
-    private static final Logger logger = Logger.getLogger(RolePolicyProvider.class);
-
     public KommonitorRolePolicyProvider(BiFunction<Policy, AuthorizationProvider, RolePolicyRepresentation> representationFunction) {
+        super(representationFunction);
         this.representationFunction = representationFunction;
     }
 
     @Override
     public void evaluate(Evaluation evaluation) {
+        AuthorizationProvider authorizationProvider = evaluation.getAuthorizationProvider();
+        RealmModel realm = authorizationProvider.getKeycloakSession().getContext().getRealm();
+
+        Optional<String> kommonitorRealm = Configuration.getOptionalValue(KOMMONITOR_REALM_KEY);
+        if(kommonitorRealm.isEmpty() || !realm.getName().equals(kommonitorRealm.get())) {
+            LOG.debugf("Default policy evaluation for realm '%s'.", realm.getName());
+            super.evaluate(evaluation);
+        } else {
+            LOG.debugf("KomMonitor dedicated policy evaluation for realm '%s'.", realm.getName());
+            internalEvaluation(evaluation);
+        }
+    }
+
+    private void internalEvaluation(Evaluation evaluation) {
         Policy policy = evaluation.getPolicy();
-        RolePolicyRepresentation policyRep = representationFunction.apply(policy, evaluation.getAuthorizationProvider());
+        RolePolicyRepresentation policyRep = this.representationFunction.apply(policy, evaluation.getAuthorizationProvider());
+
         Set<String> allowed_roles = policyRep.getRoles().stream().map(RolePolicyRepresentation.RoleDefinition::getId).collect(Collectors.toSet());
         AuthorizationProvider authorizationProvider = evaluation.getAuthorizationProvider();
         RealmModel realm = authorizationProvider.getKeycloakSession().getContext().getRealm();
@@ -42,7 +63,7 @@ public class KommonitorRolePolicyProvider implements PolicyProvider {
         UserModel user = users.getUserById(realm, identity.getId());
 
         if (user.getRoleMappingsStream().anyMatch(r -> allowed_roles.contains(r.getId()))) {
-            logger.debug("GRANTED --> user.hasDirectRole");
+            LOG.debug("GRANTED --> user.hasDirectRole");
             evaluation.grant();
             return;
         }
@@ -54,7 +75,7 @@ public class KommonitorRolePolicyProvider implements PolicyProvider {
         // iterate real user groups and success-fast
         user.getGroupsStream().anyMatch(g -> g.getRoleMappingsStream().anyMatch(role -> {
             if (allowed_roles.contains(role.getId())) {
-                logger.debugf("GRANTED --> user.hasRoleFromGroup %s", g.getName());
+                LOG.debugf("GRANTED --> user.hasRoleFromGroup %s", g.getName());
                 evaluation.grant();
                 return true;
             }
