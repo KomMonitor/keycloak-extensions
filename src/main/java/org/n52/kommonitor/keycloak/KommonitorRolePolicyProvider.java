@@ -1,6 +1,7 @@
 package org.n52.kommonitor.keycloak;
 
 
+import java.util.Arrays;
 import java.util.Optional;
 import java.util.Set;
 import java.util.function.BiFunction;
@@ -22,7 +23,7 @@ import org.keycloak.representations.idm.authorization.RolePolicyRepresentation;
 
 public class KommonitorRolePolicyProvider extends RolePolicyProvider {
 
-    private static final String KOMMONITOR_REALM_KEY = "kommonitor.realm.name";
+    private static final String KOMMONITOR_REALM_KEY = "kommonitor.realms";
 
 
     private static final Logger LOG = Logger.getLogger(RolePolicyProvider.class);
@@ -38,14 +39,20 @@ public class KommonitorRolePolicyProvider extends RolePolicyProvider {
     public void evaluate(Evaluation evaluation) {
         AuthorizationProvider authorizationProvider = evaluation.getAuthorizationProvider();
         RealmModel realm = authorizationProvider.getKeycloakSession().getContext().getRealm();
+        String [] kommonitorRealms = null;
 
-        Optional<String> kommonitorRealm = Configuration.getOptionalValue(KOMMONITOR_REALM_KEY);
-        if(kommonitorRealm.isEmpty() || !realm.getName().equals(kommonitorRealm.get())) {
-            LOG.debugf("Default policy evaluation for realm '%s'.", realm.getName());
-            super.evaluate(evaluation);
-        } else {
+        Optional<String> kommonitorRealmsOpt = Configuration.getOptionalValue(KOMMONITOR_REALM_KEY);
+        if(kommonitorRealmsOpt.isPresent()) {
+            kommonitorRealms = kommonitorRealmsOpt.get().split(",");
+        }
+
+        if(kommonitorRealms != null && Arrays.stream(kommonitorRealms).anyMatch(r -> r.equals(realm.getName()))) {
             LOG.debugf("KomMonitor dedicated policy evaluation for realm '%s'.", realm.getName());
             internalEvaluation(evaluation);
+        } else {
+            LOG.debugf("Default policy evaluation for realm '%s'.", realm.getName());
+            super.evaluate(evaluation);
+
         }
     }
 
