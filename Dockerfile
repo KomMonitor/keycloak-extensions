@@ -1,7 +1,7 @@
 ARG KC_IMAGE_VERSION="25.0.6"
 ARG KC_LIB_VERSION="25.0.6"
 
-FROM maven:3-eclipse-temurin-17-alpine  AS mvnbuilder
+FROM maven:3-eclipse-temurin-17-alpine AS mvnbuilder
 
 # Copy sourcecode and compile
 COPY src src
@@ -25,11 +25,11 @@ RUN cp -r /opt/keycloak/* .
 RUN ./bin/kc.sh build --features="admin-fine-grained-authz,scripts,hostname:v1"
 
 # target = postgres
-FROM quay.io/keycloak/keycloak:latest AS postgres
+FROM quay.io/keycloak/keycloak:${KC_IMAGE_VERSION} AS postgres
 COPY --from=kcbuilder /opt/keycloak-postgres/ /opt/keycloak/
 ENTRYPOINT ["/opt/keycloak/bin/kc.sh", "start", "--optimized"]
 
 # target = mssql
-FROM quay.io/keycloak/keycloak:latest AS mssql
+FROM quay.io/keycloak/keycloak:${KC_IMAGE_VERSION} AS mssql
 COPY --from=kcbuilder /opt/keycloak-mssql/ /opt/keycloak/
 ENTRYPOINT ["/opt/keycloak/bin/kc.sh", "start", "--optimized"]
