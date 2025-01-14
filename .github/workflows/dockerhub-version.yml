@@ -30,7 +30,7 @@ jobs:
       - name: Check Out Repo 
         uses: actions/checkout@v2 
 
-      - name: Docker meta | targe = postgres
+      - name: Docker meta | target = postgres
         id: meta_postgres
         uses: docker/metadata-action@v3
         with:
