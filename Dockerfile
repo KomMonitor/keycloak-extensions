@@ -1,5 +1,5 @@
-ARG KC_IMAGE_VERSION="26.0.8"
-ARG KC_LIB_VERSION="26.0.8"
+ARG KC_IMAGE_VERSION="26.1.0"
+ARG KC_LIB_VERSION="26.1.0"
 
 FROM maven:3-eclipse-temurin-17-alpine AS mvnbuilder
 
