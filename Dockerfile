@@ -1,5 +1,5 @@
-ARG KC_IMAGE_VERSION="26.1.3"
-ARG KC_LIB_VERSION="26.1.3"
+ARG KC_IMAGE_VERSION="26.2.0"
+ARG KC_LIB_VERSION="26.2.0"
 
 FROM maven:3-eclipse-temurin-17-alpine AS mvnbuilder
 
@@ -16,13 +16,13 @@ WORKDIR /opt/keycloak-postgres
 ENV KC_DB=postgres
 RUN cp -r /opt/keycloak/* .
 RUN ls -lhat
-RUN ./bin/kc.sh build --features="admin-fine-grained-authz,scripts,token-exchange"
+RUN ./bin/kc.sh build --features="admin-fine-grained-authz:v1,scripts,token-exchange:v1,"
 
 # build for mssql
 WORKDIR /opt/keycloak-mssql
 ENV KC_DB=mssql
 RUN cp -r /opt/keycloak/* .
-RUN ./bin/kc.sh build --features="admin-fine-grained-authz,scripts,token-exchange"
+RUN ./bin/kc.sh build --features="admin-fine-grained-authz:v1,scripts,token-exchange:v1,"
 
 # target = postgres
 FROM quay.io/keycloak/keycloak:${KC_IMAGE_VERSION} AS postgres
