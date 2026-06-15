@@ -1,6 +1,6 @@
 services:
   keycloak:
-    image: quay.io/keycloak/keycloak:26.5.7
+    image: quay.io/keycloak/keycloak:26.6.3
     restart: on-failure:5
     ports:
       - 8080:8080
