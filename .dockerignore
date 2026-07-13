@@ -1,0 +1,28 @@
+# Everything the build does not need
+.git
+.gitignore
+.github
+certs
+docker-compose.yml
+README.md
+SECURITY.md
+*.md
+LICENSE
+
+# Build output / IDE / local files
+target
+.idea
+.settings
+.classpath
+.project
+*.iml
+*.iws
+*.ipr
+
+# Secrets
+*.pem
+*.key
+*.p12
+*.pfx
+*.env
+.env

@@ -1,35 +1,69 @@
+# Pin base image version
 ARG KC_IMAGE_VERSION="26.6.3"
-ARG KC_LIB_VERSION="26.6.3"
+# Digest of quay.io/keycloak/keycloak:26.6.3
+ARG KC_IMAGE_DIGEST="sha256:9b0330756022422149aa6502eb2def8cd47c6e1b000c7c65cdb13e7c0133e992"
+# Keycloak features compiled into every DB target.
+ARG KC_FEATURES="admin-fine-grained-authz:v1,scripts,token-exchange:v1"
 
-FROM maven:3-eclipse-temurin-17-alpine AS mvnbuilder
+# Compile custom provider JAR
+FROM maven:3-eclipse-temurin-17-alpine@sha256:22ab50236eec4106ef19d86c0268c0adfac6a2051a3f5d473a315a3ab77c619f AS mvnbuilder
+WORKDIR /build
 
-# Copy sourcecode and compile
+# Resolve and cache dependencies
+COPY pom.xml .
+RUN mvn -B -ntp dependency:go-offline
+
+# Then compile the sources
 COPY src src
-COPY pom.xml pom.xml
-RUN mvn clean package
+RUN mvn -B -ntp package
 
-FROM quay.io/keycloak/keycloak:${KC_IMAGE_VERSION} AS kcbuilder
-COPY --from=mvnbuilder /target/keycloak-extensions-1.0.jar /opt/keycloak/providers/keycloak-extensions-1.0.jar
+# Shared prep: add the provider and enable build-time endpoints, reused by every
+# DB target so the layer is built once
+FROM quay.io/keycloak/keycloak:${KC_IMAGE_VERSION}@${KC_IMAGE_DIGEST} AS kc-base
+COPY --from=mvnbuilder --chown=1000:0 /build/target/keycloak-extensions-1.0.jar /opt/keycloak/providers/keycloak-extensions-1.0.jar
+# Enable endpoints for health checks and metrics (build-time options)
+ENV KC_HEALTH_ENABLED=true \
+    KC_METRICS_ENABLED=true
 
-# build for postgres
-WORKDIR /opt/keycloak-postgres
+# Final Keycloak image with PostgreSQL support.
+FROM kc-base AS postgres
+ARG KC_IMAGE_VERSION
+ARG KC_FEATURES
 ENV KC_DB=postgres
-RUN cp -r /opt/keycloak/* .
-RUN ls -lhat
-RUN ./bin/kc.sh build --features="admin-fine-grained-authz:v1,scripts,token-exchange:v1,"
+RUN /opt/keycloak/bin/kc.sh build --features="${KC_FEATURES}"
 
-# build for mssql
-WORKDIR /opt/keycloak-mssql
-ENV KC_DB=mssql
-RUN cp -r /opt/keycloak/* .
-RUN ./bin/kc.sh build --features="admin-fine-grained-authz:v1,scripts,token-exchange:v1,"
+# Set OCI metadata
+LABEL org.opencontainers.image.title="KomMonitor Keycloak (PostgreSQL)" \
+      org.opencontainers.image.description="Keycloak with KomMonitor role-policy SPI and role mapper, optimized for PostgreSQL" \
+      org.opencontainers.image.source="https://github.com/kommonitor/keycloak-extensions" \
+      org.opencontainers.image.vendor="52°North" \
+      org.opencontainers.image.licenses="Apache-2.0" \
+      org.opencontainers.image.version="${KC_IMAGE_VERSION}"
 
-# target = postgres
-FROM quay.io/keycloak/keycloak:${KC_IMAGE_VERSION} AS postgres
-COPY --from=kcbuilder /opt/keycloak-postgres/ /opt/keycloak/
+# Run as unprivileged user
+USER 1000
+
+# Expose HTTP, HTTPS and management (health/metrics) ports
+EXPOSE 8080 8443 9000
 ENTRYPOINT ["/opt/keycloak/bin/kc.sh", "start", "--optimized"]
 
-# target = mssql
-FROM quay.io/keycloak/keycloak:${KC_IMAGE_VERSION} AS mssql
-COPY --from=kcbuilder /opt/keycloak-mssql/ /opt/keycloak/
+# Final Keycloak image with MSSQL DB support
+FROM kc-base AS mssql
+ARG KC_IMAGE_VERSION
+ARG KC_FEATURES
+ENV KC_DB=mssql
+RUN /opt/keycloak/bin/kc.sh build --features="${KC_FEATURES}"
+
+LABEL org.opencontainers.image.title="KomMonitor Keycloak (MSSQL)" \
+      org.opencontainers.image.description="Keycloak with KomMonitor role-policy SPI and role mapper, optimized for MSSQL" \
+      org.opencontainers.image.source="https://github.com/kommonitor/keycloak-extensions" \
+      org.opencontainers.image.vendor="52°North" \
+      org.opencontainers.image.licenses="Apache-2.0" \
+      org.opencontainers.image.version="${KC_IMAGE_VERSION}"
+
+# Run as unprivileged user
+USER 1000
+
+# Expose HTTP, HTTPS and management (health/metrics) ports
+EXPOSE 8080 8443 9000
 ENTRYPOINT ["/opt/keycloak/bin/kc.sh", "start", "--optimized"]
