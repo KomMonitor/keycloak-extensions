@@ -32,23 +32,21 @@ jobs:
       - name: Install cosign
         uses: sigstore/cosign-installer@398d4b0eeef1380460a10c8013a76f728fb906ac # v3
 
-      - name: Docker meta | target = postgres
-        id: meta_postgres
-        uses: docker/metadata-action@c299e40c65443455700f0fdfc63efafe5b349051 # v5
-        with:
-          images: kommonitor/keycloak
-          tags: |
-            type=semver,pattern={{version}}-postgres
-            type=semver,pattern={{major}}.{{minor}}-postgres
+      # The release tag may be a pre-release (e.g. v26.6.3-SNAPSHOT). We derive
+      # the version ourselves (stripping a leading "v") and build the DB-suffixed
+      # tags with type=raw below. docker/metadata-action's `type=semver` IGNORES
+      # the pattern — including its `-postgres`/`-mssql` suffix — for pre-release
+      # tags and emits only the bare `{{version}}`, which is why a plain
+      # `26.6.3-SNAPSHOT` was published instead of the suffixed tags.
+      - name: Compute image version
+        id: ver
+        run: echo "value=${GITHUB_REF_NAME#v}" >> "$GITHUB_OUTPUT"
 
-      - name: Docker meta | target = mssql
-        id: meta_mssql
+      - name: Docker meta (OCI labels)
+        id: meta
         uses: docker/metadata-action@c299e40c65443455700f0fdfc63efafe5b349051 # v5
         with:
           images: kommonitor/keycloak
-          tags: |
-            type=semver,pattern={{version}}-mssql
-            type=semver,pattern={{major}}.{{minor}}-mssql
 
       - name: Login to Docker Hub
         uses: docker/login-action@c94ce9fb468520275223c153574b00df6fe4bcc9 # v3
@@ -153,9 +151,9 @@ jobs:
           file: ./Dockerfile
           target: postgres
           push: true
-          tags: ${{ steps.meta_postgres.outputs.tags }}
-          labels: ${{ steps.meta_postgres.outputs.labels }}
-          annotations: ${{ steps.meta_postgres.outputs.annotations }}
+          tags: kommonitor/keycloak:${{ steps.ver.outputs.value }}-postgres
+          labels: ${{ steps.meta.outputs.labels }}
+          annotations: ${{ steps.meta.outputs.annotations }}
           sbom: true
           provenance: mode=max
           cache-from: type=gha,scope=postgres
@@ -169,9 +167,9 @@ jobs:
           file: ./Dockerfile
           target: mssql
           push: true
-          tags: ${{ steps.meta_mssql.outputs.tags }}
-          labels: ${{ steps.meta_mssql.outputs.labels }}
-          annotations: ${{ steps.meta_mssql.outputs.annotations }}
+          tags: kommonitor/keycloak:${{ steps.ver.outputs.value }}-mssql
+          labels: ${{ steps.meta.outputs.labels }}
+          annotations: ${{ steps.meta.outputs.annotations }}
           sbom: true
           provenance: mode=max
           cache-from: type=gha,scope=mssql
