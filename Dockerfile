@@ -1,7 +1,7 @@
 # Pin base image version
-ARG KC_IMAGE_VERSION="26.6.4"
+ARG KC_IMAGE_VERSION="26.7.0"
 # Digest of quay.io/keycloak/keycloak:26.6.3
-ARG KC_IMAGE_DIGEST="sha256:0aae0de7fca85525f727d3354df17896092de8bb26ae4c12d89c77e5df8cbce4"
+ARG KC_IMAGE_DIGEST="sha256:2eb3cd316835c990e69e26ade292ffa78f6fb0db7d5fc6377463c162e1979ac0"
 # Keycloak features compiled into every DB target.
 ARG KC_FEATURES="admin-fine-grained-authz:v1,scripts,token-exchange:v1"
 
