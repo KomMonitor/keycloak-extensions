@@ -5,6 +5,19 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [26.7.0]
+> 16 Jul 2026
+
+### Added
+
+- Add dependabot config ([d3cf415](https://github.com/KomMonitor/keycloak-extensions/commit/d3cf4151adbe3a3e14d242f524024f0ff1ae7064))
+- Add security documentation ([b626c33](https://github.com/KomMonitor/keycloak-extensions/commit/b626c33117981a29a231a987c786737b417120d9))
+- Add cliff config and init CHANGELOG ([1621285](https://github.com/KomMonitor/keycloak-extensions/commit/1621285eb1def15817b252df74b0992909e08752))
+
+### Updated
+
+- Raise Keycloak minor version ([b7af4f7](https://github.com/KomMonitor/keycloak-extensions/commit/b7af4f75879338b735c6d5ad5cd882caff1a6d69))
+
 ## [26.6.4]
 > 16 Jul 2026
 
@@ -142,6 +155,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Fix workflow file ([92ae73e](https://github.com/KomMonitor/keycloak-extensions/commit/92ae73e8cab625ec459183121bf80454ec389fe8))
 
+[26.7.0]: https://github.com/KomMonitor/keycloak-extensions/compare/v26.6.4..v26.7.0
 [26.6.4]: https://github.com/KomMonitor/keycloak-extensions/compare/v26.6.3..v26.6.4
 [26.6.3]: https://github.com/KomMonitor/keycloak-extensions/compare/v26.5.7..v26.6.3
 [26.5.7]: https://github.com/KomMonitor/keycloak-extensions/compare/v26.5.5..v26.5.7
