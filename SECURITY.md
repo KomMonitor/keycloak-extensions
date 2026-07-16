@@ -86,17 +86,3 @@ Verify the signature before deploying:
   9000 internal-only.
 - Keep container **logs on stdout/stderr** so the host collects them via the
   logging driver; never write logs to files inside the container.
-
-## Remaining responsibilities
-
-These requirements are **out of scope for this image** and must be
-covered by the operator's platform and processes:
-
-- Segment host-admin, container-admin and access networks; restrict to necessary communication.
-- No admin remote access *from* the container to the host; administer via the container runtime only.
-- MAC enforcement at the host - AppArmor/SELinux profiles restricting network, filesystem and syscalls; restrict container egress.
-- Forensic snapshots of container state.
-- Runtime behaviour monitoring/IDS.
-- Redundancy at host/orchestration level.
-- Host pinning and hypervisor isolation.
-- Organizational processes; the Keycloak config that is versioned in KomMonitor deployment repos covers A20.
