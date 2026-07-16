@@ -1,10 +1,14 @@
-# Kommonitor Keycloak Extensions
+# KomMonitor Keycloak Extensions
 
-Repository containing extensions/custom implementations for use with Keycloak in the Kommonitor Project. Currently implemented functionality:
+Repository containing extensions/custom implementations for use with Keycloak in the KomMonitor Project.
+The repository also ships a security hardened Keycloak image, that bundles the extensions and .
+
+## Extensions
+Currently implemented functionality:
 
 ### `km-mapper.js` 
 
-Custom Tokenmapper replacing the default KC `roles` Mapper. Adds `roles` claim to Token containing all roles that:
+Custom token mapper replacing the default KC `roles` Mapper. Adds `roles` claim to Token containing all roles that:
 
 - Are directly assigned to the User
 - Are assigned to a group the user is directly part of
@@ -34,6 +38,8 @@ You can provide the jar via a simple file mount:
 
 Note: This file is not reloaded at runtime, for changes to take effect Keycloak needs to be restarted.
 
-### k8s
+## Security
+The resulting Keycloak image is hardened by taking into account common security best practices. In particular,
+several baseline protection recommendations for containerized applications are taken into account. Read more
+about it in the [SECURITY doc](./SECURITY.md).
 
-TBD
