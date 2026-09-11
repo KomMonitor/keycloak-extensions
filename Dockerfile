@@ -1,12 +1,12 @@
 # Pin base image version
-ARG KC_IMAGE_VERSION="26.7.2"
-# Digest of quay.io/keycloak/keycloak:26.7.2
-ARG KC_IMAGE_DIGEST="sha256:9d1f1b2b7261ff53c66cb1092dfcdc34a5fb77e81f9e6a6e75b8b6a795de8067"
+ARG KC_IMAGE_VERSION="26.7.3"
+# Digest of quay.io/keycloak/keycloak:26.7.3
+ARG KC_IMAGE_DIGEST="sha256:ff4257d0d64efbe99ed1ddfaf07765cc3c36dc7518bf8324d41961327f441c54"
 # Keycloak features compiled into every DB target.
 ARG KC_FEATURES="admin-fine-grained-authz:v1,scripts,token-exchange:v1"
 
 # Compile custom provider JAR
-FROM maven:3-eclipse-temurin-26-alpine@sha256:790e9146c22685eeaf923003fa9a892ce50f22ad06fb998fe861109b1de779c5 AS mvnbuilder
+FROM maven:3.9.16-eclipse-temurin-26-alpine@sha256:706e9b698c40340c4849b2092e24d97a1290dea21106fbda9e6803530123a5b0 AS mvnbuilder
 WORKDIR /build
 
 # Resolve and cache dependencies
