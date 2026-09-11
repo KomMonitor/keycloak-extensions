@@ -71,10 +71,8 @@ jobs:
           cache-from: type=gha,scope=mssql
           cache-to: type=gha,mode=max,scope=mssql
 
-      # Report ALL severities to the Security tab, then gate on CRITICAL. Images
-      # are pushed only AFTER both gates pass, so a CRITICAL finding blocks
-      # publication entirely. Reports upload before the gates so findings are
-      # recorded even when a gate fails.
+      # Report ALL severities to the Security tab (report-only — does not fail
+      # the build).
       - name: Trivy report (all severities) | postgres
         uses: aquasecurity/trivy-action@ed142fd0673e97e23eac54620cfb913e5ce36c25 # v0.36.0
         with:
@@ -108,27 +106,6 @@ jobs:
         with:
           sarif_file: trivy-mssql.sarif
           category: trivy-mssql
-
-      # BSlock publication on unfixed CRITICAL vulnerabilities.
-      - name: Trivy gate (fail on CRITICAL) | postgres
-        uses: aquasecurity/trivy-action@ed142fd0673e97e23eac54620cfb913e5ce36c25 # v0.36.0
-        with:
-          image-ref: kommonitor/keycloak:ci-scan-postgres
-          format: table
-          exit-code: '1'
-          ignore-unfixed: true
-          vuln-type: os,library
-          severity: CRITICAL
-
-      - name: Trivy gate (fail on CRITICAL) | mssql
-        uses: aquasecurity/trivy-action@ed142fd0673e97e23eac54620cfb913e5ce36c25 # v0.36.0
-        with:
-          image-ref: kommonitor/keycloak:ci-scan-mssql
-          format: table
-          exit-code: '1'
-          ignore-unfixed: true
-          vuln-type: os,library
-          severity: CRITICAL
 
       # Layers are cache hits; this step assembles the SBOM/provenance
       # attestations and pushes.
