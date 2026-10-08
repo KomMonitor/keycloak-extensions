@@ -5,12 +5,59 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [26.7.4]
+> 22 Sep 2026
+
+### Updated
+
+- Raise Keycloak patch version ([2c3434c](https://github.com/KomMonitor/keycloak-extensions/commit/2c3434c6b7e45247fc5ba5d79383ad29e2cd898f))
+
+## [26.7.3]
+> 11 Sep 2026
+
+### Changed
+
+- Bump github/codeql-action/upload-sarif from 4.37.3 to 4.37.9 ([1bd704a](https://github.com/KomMonitor/keycloak-extensions/commit/1bd704adbd81634e6a7654eb5378f5d983e076b2))
+- Merge pull request #24 from KomMonitor/dependabot/github_actions/github/codeql-action/upload-sarif-4.37.9 ([58ea945](https://github.com/KomMonitor/keycloak-extensions/commit/58ea94525d0c24493e47633a365adbab92b513ee))
+- Bump docker/login-action from 4.4.0 to 4.6.0 ([301e466](https://github.com/KomMonitor/keycloak-extensions/commit/301e4666449bc05e8e77a10daec77d882d2de2e2))
+- Merge pull request #15 from KomMonitor/dependabot/github_actions/docker/login-action-4.6.0 ([b8a99d6](https://github.com/KomMonitor/keycloak-extensions/commit/b8a99d61b1e2f60b28f53b96e0d2a074de8e992e))
+- Bump docker/setup-buildx-action from 4.2.0 to 4.3.0 ([828e7b9](https://github.com/KomMonitor/keycloak-extensions/commit/828e7b9d1d6261400c07efc445298fb27c30a885))
+- Merge pull request #22 from KomMonitor/dependabot/github_actions/docker/setup-buildx-action-4.3.0 ([d4c3d24](https://github.com/KomMonitor/keycloak-extensions/commit/d4c3d24df65f56a28965c13463d58b60960090e0))
+
+### Removed
+
+- Remove trivy gate ([f1f6f48](https://github.com/KomMonitor/keycloak-extensions/commit/f1f6f480d394ec0c7bb9c8e28c185b558f7efbf1))
+
+### Updated
+
+- Raise Keycloak patch version ([d228caa](https://github.com/KomMonitor/keycloak-extensions/commit/d228caacb5b5056cc0cf53ccc9a73db5100b76be))
+
 ## [26.7.2]
 > 31 Aug 2026
 
 ### Changed
 
 - Update SECURITY.md ([934c19a](https://github.com/KomMonitor/keycloak-extensions/commit/934c19aa865a174826672d2552774b2d4cf452f7))
+- Bump sigstore/cosign-installer from 3.9.1 to 4.1.2 ([1500985](https://github.com/KomMonitor/keycloak-extensions/commit/15009859b3abde6940fc13f9529810a7f74645e8))
+- Merge pull request #5 from KomMonitor/dependabot/github_actions/sigstore/cosign-installer-4.1.2 ([2b34a5d](https://github.com/KomMonitor/keycloak-extensions/commit/2b34a5dedeacb550b338887a4a21bf0dfd1b30d4))
+- Bump org.jboss.logging:jboss-logging from 3.6.0.Final to 3.6.3.Final ([3501565](https://github.com/KomMonitor/keycloak-extensions/commit/3501565005b05ff86a3a4c1091587bcd10c3ca71))
+- Merge pull request #7 from KomMonitor/dependabot/maven/org.jboss.logging-jboss-logging-3.6.3.Final ([320e948](https://github.com/KomMonitor/keycloak-extensions/commit/320e948ab3e8be568d3fa7af76e655656262af5e))
+- Bump docker/login-action from 3.7.0 to 4.4.0 ([0a364d6](https://github.com/KomMonitor/keycloak-extensions/commit/0a364d619a87350501fcb657b28f7efa08bb4c82))
+- Merge pull request #6 from KomMonitor/dependabot/github_actions/docker/login-action-4.4.0 ([c914ec3](https://github.com/KomMonitor/keycloak-extensions/commit/c914ec3517350c15e5c3538af2bd4d3852042a92))
+- Bump docker/metadata-action from 5.10.0 to 6.2.0 ([cb8c679](https://github.com/KomMonitor/keycloak-extensions/commit/cb8c679340eb1f2fc8a27d4aee35c54618c07e0a))
+- Merge pull request #8 from KomMonitor/dependabot/github_actions/docker/metadata-action-6.2.0 ([73e3dca](https://github.com/KomMonitor/keycloak-extensions/commit/73e3dca196dd03b9e6144d13040b285a3078c2e5))
+- Bump docker/build-push-action from 6.19.2 to 7.3.0 ([1a4b923](https://github.com/KomMonitor/keycloak-extensions/commit/1a4b923be83d1646a0bb5ed29079b902f12a3409))
+- Merge pull request #11 from KomMonitor/dependabot/github_actions/docker/build-push-action-7.3.0 ([c4c7048](https://github.com/KomMonitor/keycloak-extensions/commit/c4c7048a796636d290345f944559d3d9284374e6))
+- Bump docker/setup-buildx-action from 3.12.0 to 4.2.0 ([cdd67e1](https://github.com/KomMonitor/keycloak-extensions/commit/cdd67e177b59343628b9ef26437b2a564224c935))
+- Merge pull request #12 from KomMonitor/dependabot/github_actions/docker/setup-buildx-action-4.2.0 ([227129e](https://github.com/KomMonitor/keycloak-extensions/commit/227129e202f249a2286c3100c3629663dd1a675b))
+- Bump actions/checkout from 4.3.1 to 7.0.1 ([92666bb](https://github.com/KomMonitor/keycloak-extensions/commit/92666bb77ace4af87d55a7f69cba9e9a37d1f737))
+- Merge pull request #13 from KomMonitor/dependabot/github_actions/actions/checkout-7.0.1 ([575cd52](https://github.com/KomMonitor/keycloak-extensions/commit/575cd5232fed23ccb91a21317bb80d155e28dd11))
+- Bump github/codeql-action/upload-sarif from 3.36.3 to 4.37.3 ([014aa0b](https://github.com/KomMonitor/keycloak-extensions/commit/014aa0b117b4a28efea5dbad289eb04034ab5168))
+- Merge pull request #14 from KomMonitor/dependabot/github_actions/github/codeql-action/upload-sarif-4.37.3 ([85a8a3f](https://github.com/KomMonitor/keycloak-extensions/commit/85a8a3fe9e19c4c85b4140a97b8be1d9b29d8efa))
+- Bump maven ([e2e9b62](https://github.com/KomMonitor/keycloak-extensions/commit/e2e9b62382ca268b01db1d1749b61e8b63f07b90))
+- Merge pull request #4 from KomMonitor/dependabot/docker/maven-3-eclipse-temurin-26-alpine ([9509d4f](https://github.com/KomMonitor/keycloak-extensions/commit/9509d4f51b93167b8ad0cf462a8d9fa87a74840a))
+- Update CHANGELOG ([e7196b7](https://github.com/KomMonitor/keycloak-extensions/commit/e7196b71809f80bdb372738dfad3afb6436dbb11))
+- Merge branch 'develop' ([5454265](https://github.com/KomMonitor/keycloak-extensions/commit/54542659a83b00c1f382330295b3f3363f7500fd))
 
 ### Updated
 
@@ -170,6 +217,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Fix workflow file ([92ae73e](https://github.com/KomMonitor/keycloak-extensions/commit/92ae73e8cab625ec459183121bf80454ec389fe8))
 
+[26.7.4]: https://github.com/KomMonitor/keycloak-extensions/compare/v26.7.3..v26.7.4
+[26.7.3]: https://github.com/KomMonitor/keycloak-extensions/compare/v26.7.2..v26.7.3
 [26.7.2]: https://github.com/KomMonitor/keycloak-extensions/compare/v26.7.0..v26.7.2
 [26.7.0]: https://github.com/KomMonitor/keycloak-extensions/compare/v26.6.4..v26.7.0
 [26.6.4]: https://github.com/KomMonitor/keycloak-extensions/compare/v26.6.3..v26.6.4
@@ -184,6 +233,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 [26.1.3]: https://github.com/KomMonitor/keycloak-extensions/compare/v26.1.0..v26.1.3
 [26.1.0]: https://github.com/KomMonitor/keycloak-extensions/compare/v26.0.8..v26.1.0
 [26.0.8]: https://github.com/KomMonitor/keycloak-extensions/compare/v25.0.6..v26.0.8
-[25.0.6]: https://github.com/KomMonitor/keycloak-extensions/compare/v26.7.0..v25.0.6
+[25.0.6]: https://github.com/KomMonitor/keycloak-extensions/compare/v26.7.4..v25.0.6
 
 <!-- generated by git-cliff -->
