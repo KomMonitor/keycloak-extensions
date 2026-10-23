@@ -6,7 +6,7 @@ ARG KC_IMAGE_DIGEST="sha256:37dbaf6f0722c9ec246335f36e1ef8b2e6cb960f7c27e0d8c615
 ARG KC_FEATURES="admin-fine-grained-authz:v1,scripts,token-exchange:v1"
 
 # Compile custom provider JAR
-FROM maven:3.9.16-eclipse-temurin-26-alpine@sha256:706e9b698c40340c4849b2092e24d97a1290dea21106fbda9e6803530123a5b0 AS mvnbuilder
+FROM maven:3.9.16-eclipse-temurin-26-alpine@sha256:c8188a7f5e708b4a9b7ec11072c13e3eb7af848b3155ee0b19f229a75dac4dad AS mvnbuilder
 WORKDIR /build
 
 # Resolve and cache dependencies
